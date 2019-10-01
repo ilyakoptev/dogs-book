@@ -63,9 +63,12 @@ class BreedCard extends React.Component {
         constructor(props){
             super(props);
             this.state = {
-                images: []
+                images: [],
+                show: false,
+                fullimage: ""
             }
-           // this.changeImage = this.changeImage.bind(this)
+            this.openModal = this.openModal.bind(this)
+            this.closeModal = this.closeModal.bind(this)
         }
         componentDidMount (){
             this.insertImagesToArray(); // insert random image to state by breed gets from parent
@@ -80,33 +83,46 @@ class BreedCard extends React.Component {
             })  
            // console.log(this.state.images)  
         }
-         render() {
+        
+        openModal(e){
+          this.setState({show:true})
+          this.setState({fullimage:e.target.src})
+        }
+        closeModal(){
+          this.setState({show:false})
+          this.setState({fullimage:""})
+        }
+        render() {
             var Container = ReactBootstrap.Container;
             var Row = ReactBootstrap.Row 
             var Col = ReactBootstrap.Col 
             var NavLink = ReactRouterDOM.NavLink 
+            var Modal = ReactBootstrap.Modal;
             var Navbar = ReactBootstrap.Navbar;
             var Nav = ReactBootstrap.Nav;
             var CardColumns = ReactBootstrap.CardColumns;
             var Card = ReactBootstrap.Card;
+            var Button = ReactBootstrap.Button;
+            
          
          // console.log(this.props)
         console.log(this.state.images)  
           var viewAllImages = this.state.images.map( item => {
-          return(
-           <Card className="text-center border">
-           <Card.Body >
-          
-            {/* <Card.Title>{this.props.match.params.breed}</Card.Title> */}
-             <Card.Text>
-           
-             <img src={item} style={{ width: '100%' }}></img>
-           </Card.Text>
-           {/* <Card.Text>
-             <button class="btn btn-light" onClick={this.changeImage}>Change image</button>
-           </Card.Text> */}
-         </Card.Body> 
-          </Card> )
+             
+             return(
+                  <Card className="text-center border">
+                  <Card.Body >
+
+                   {/* <Card.Title>{this.props.match.params.breed}</Card.Title> */}
+                    <Card.Text>
+
+                   <img src={item} style={{ width: '100%' }} onClick={this.openModal}></img>
+                  </Card.Text>
+                  {/* <Card.Text>
+                    <button class="btn btn-light" onClick={this.changeImage}>Change image</button>
+                  </Card.Text> */}
+                </Card.Body> 
+                 </Card> )
          })
         
         return (    
@@ -133,11 +149,25 @@ class BreedCard extends React.Component {
                  <Row >
                  
                    <Col sm="11" md ="10" xl="12" className=" mx-auto">
+                     
+                            
                      <CardColumns> 
                      {viewAllImages}
                      </CardColumns> 
                   </Col>
-               </Row>    
+               </Row>   
+
+                  <Modal show={this.state.show} onHide={this.closeModal}>
+                              <Modal.Header closeButton>
+                              <Modal.Title>{this.props.match.params.breed}</Modal.Title>
+                              </Modal.Header>
+                              <Modal.Body><img src={this.state.fullimage} style={{"width":"100%"}}></img></Modal.Body>
+                              <Modal.Footer>
+                                <Button variant="secondary" onClick={this.closeModal}>
+                                  Close
+                                </Button>
+                               </Modal.Footer>
+                            </Modal> 
             </Container>
                                   
               );}
@@ -349,6 +379,7 @@ class App extends React.Component {
                       <Route exact path="/" class="nav-link nav-orange" component={Home}/> 
                       <Route exact path="/gallery/" class="nav-link nav-orange" component={DogGallery}/> 
                       <Route exact path="/breed/:breed" class="nav-link nav-orange" component={SingleBreedGallery}/>
+                     
                     </Switch>
   
                  </Container>
