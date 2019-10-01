@@ -1,0 +1,8 @@
+.nav-orange {
+    color: orangered;
+}
+
+.active {
+    text-decoration-line: underline;
+    font-size: 110%;
+}
